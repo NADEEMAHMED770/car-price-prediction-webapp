@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Car Selling Price Predictor</title>
+  
+  <!-- Custom Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231d1f63'/%3E%3Cpath d='M30 55 L38 38 L55 38 L68 55 L30 55' fill='%238b74ff'/%3E%3Ccircle cx='48' cy='68' r='12' fill='white'/%3E%3Ccircle cx='65' cy='68' r='12' fill='white'/%3E%3Crect x='58' y='38' width='20' height='15' rx='4' fill='white' opacity='0.9'/%3E%3C/svg%3E">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  
+  <!-- Static files -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="logo">
+    <i class="fa-solid fa-car-side"></i>
+    <span>CarPrice Predictor</span>
+  </div>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#predict">Predict</a>
+    <a href="#about">About</a>
+  </nav>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-left">
+    <h1>
+      Car Selling Price
+      <span>Predictor</span>
+    </h1>
+    <p>
+      Predict your car's resale value instantly using
+      Machine Learning and Multiple Linear Regression.
+    </p>
+    <div class="features">
+      <div class="feature"><i class="fa-solid fa-bolt"></i><span>Fast</span></div>
+      <div class="feature"><i class="fa-solid fa-brain"></i><span>ML Powered</span></div>
+      <div class="feature"><i class="fa-solid fa-chart-line"></i><span>Accurate</span></div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Crect width='200' height='120' fill='none'/%3E%3Cpath d='M40 65 L52 42 L85 42 L105 65 L40 65' fill='%238b74ff' opacity='0.9'/%3E%3Ccircle cx='62' cy='78' r='14' fill='%23ffffff' opacity='0.9'/%3E%3Ccircle cx='118' cy='78' r='14' fill='%23ffffff' opacity='0.9'/%3E%3Crect x='98' y='42' width='44' height='28' rx='6' fill='%23ffffff' opacity='0.8'/%3E%3Crect x='104' y='52' width='32' height='10' rx='4' fill='%238b74ff' opacity='0.6'/%3E%3C/svg%3E"
+         alt="Car illustration">
+  </div>
+</section>
+
+<!-- ===== FORM ===== -->
+<section class="form-section" id="predict">
+  <div class="form-card">
+    <h2><i class="fa-solid fa-car"></i> Enter Car Details</h2>
+    <p>Fill all the information below.</p>
+
+    <!-- Error Messages -->
+    {% if errors %}
+    <div class="error-container">
+      <h4><i class="fa-solid fa-circle-exclamation"></i> Please fix the following:</h4>
+      <ul>
+        {% for error in errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <form action="/predict" method="POST">
+      <div class="input-grid">
+        <div class="input-box">
+          <label>Year</label>
+          <input 
+            type="number" 
+            name="year" 
+            value="{{ year if year else '' }}" 
+            placeholder="e.g. 2018"
+            required
+          >
+        </div>
+        <div class="input-box">
+          <label>Present Price (Lakhs)</label>
+          <input 
+            type="number" 
+            step="0.01" 
+            name="present_price" 
+            value="{{ present_price if present_price else '' }}" 
+            placeholder="e.g. 8.50"
+            required
+          >
+        </div>
+        <div class="input-box">
+          <label>Kilometers Driven</label>
+          <input 
+            type="number" 
+            name="kms_driven" 
+            value="{{ kms_driven if kms_driven else '' }}" 
+            placeholder="e.g. 45000"
+            required
+          >
+        </div>
+        <div class="input-box">
+          <label>Fuel Type</label>
+          <select name="fuel_type">
+            <option value="Petrol" {% if fuel_type == 'Petrol' %}selected{% endif %}>Petrol</option>
+            <option value="Diesel" {% if fuel_type == 'Diesel' %}selected{% endif %}>Diesel</option>
+            <option value="CNG" {% if fuel_type == 'CNG' %}selected{% endif %}>CNG</option>
+          </select>
+        </div>
+        <div class="input-box">
+          <label>Seller Type</label>
+          <select name="seller_type">
+            <option value="Dealer" {% if seller_type == 'Dealer' %}selected{% endif %}>Dealer</option>
+            <option value="Individual" {% if seller_type == 'Individual' %}selected{% endif %}>Individual</option>
+          </select>
+        </div>
+        <div class="input-box">
+          <label>Transmission</label>
+          <select name="transmission">
+            <option value="Manual" {% if transmission == 'Manual' %}selected{% endif %}>Manual</option>
+            <option value="Automatic" {% if transmission == 'Automatic' %}selected{% endif %}>Automatic</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit">
+        <i class="fa-solid fa-calculator"></i>
+        <span class="btn-text">Predict Price</span>
+        <span class="spinner"></span>
+      </button>
+    </form>
+
+    <!-- Predict Another Button (shown when result is displayed) -->
+    {% if show_result %}
+    <div class="mt-2">
+      <a href="/reset" class="btn-secondary">
+        <i class="fa-solid fa-rotate-left"></i> Predict Another Car
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ===== RESULT ===== -->
+{% if show_result and prediction is defined %}
+<section class="result-section" id="result-anchor">
+  <div class="result-card {% if is_negative %}negative{% endif %}">
+    <div class="result-icon">
+      {% if is_negative %}
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      {% else %}
+        <i class="fa-solid fa-tags"></i>
+      {% endif %}
+    </div>
+    <h2>Estimated Selling Price</h2>
+    
+    {% if is_negative %}
+      <h1 style="color: #e74c3c;">⚠️</h1>
+      <div class="negative-message">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        The model returned a negative value (₹{{ prediction }} Lakhs).
+        <br><small>This can happen with linear regression. Please try different inputs.</small>
+      </div>
+    {% else %}
+      <h1>₹ {{ "%.2f"|format(prediction) }} <small>Lakhs</small></h1>
+      <p>This prediction is based on your car details and our trained model.</p>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+<!-- ===== ABOUT ===== -->
+<section class="about" id="about">
+  <h2>Why Use This Predictor?</h2>
+  <div class="cards">
+    <div class="card">
+      <i class="fa-solid fa-crosshairs"></i>
+      <h3>High Accuracy</h3>
+      <p>Built using Multiple Linear Regression trained on real car market data.</p>
+    </div>
+    <div class="card">
+      <i class="fa-solid fa-gauge-high"></i>
+      <h3>Instant Prediction</h3>
+      <p>Get your estimated selling price within seconds.</p>
+    </div>
+    <div class="card">
+      <i class="fa-solid fa-shield-halved"></i>
+      <h3>Reliable</h3>
+      <p>Clean Flask backend with Machine Learning.</p>
+    </div>
+    <div class="card">
+      <i class="fa-solid fa-mobile-screen-button"></i>
+      <h3>Responsive</h3>
+      <p>Works beautifully on desktop, tablet and mobile.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <p>Made with <i class="fa-solid fa-heart"></i> using Flask, Python &amp; Machine Learning</p>
+  <p>Developed by <b>Nadeem Ahmed</b> <br>
+    Python • Flask • Scikit-Learn • HTML • CSS • JavaScript</p>
+</footer>
+
+</body>
+</html>
