@@ -243,15 +243,17 @@ nav a:hover {
 }
 
 .input-box input,
-.input-box select {
-  padding: 0.8rem 1rem;
-  border: 1.5px solid #e3ebf5;
-  border-radius: 18px;
-  font-size: 0.95rem;
-  background: #fafcff;
-  transition: 0.2s;
-  outline: none;
-  color: #13273e;
+.input-box select{
+
+    width:100%;
+    max-width:100%;
+
+    padding:0.8rem 1rem;
+
+    border:1.5px solid #e3ebf5;
+
+    box-sizing:border-box;
+
 }
 
 .input-box input:focus,
@@ -594,6 +596,20 @@ footer p i {
     padding-top: 70px;
   }
   
+  .input-box{
+    width:100%;
+}
+
+    .input-box input,
+    .input-box select{
+        width:100%;
+        max-width:100%;
+    }
+
+    .form-card{
+    overflow:hidden;
+    }
+
   header {
     height: 70px;
     padding: 0 5%;
@@ -629,8 +645,9 @@ footer p i {
     max-width: 250px;
   }
   .form-card {
-    padding: 1.8rem 1.2rem;
+    padding: 1.8rem;
     border-radius: 28px;
+    }
   }
   .form-card h2 {
     font-size: 1.5rem;
